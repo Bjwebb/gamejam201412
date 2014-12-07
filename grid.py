@@ -99,22 +99,32 @@ while 1:
                 current_time += 1
                 action('posY', 0, current_time)
                 action('posX', -1, current_time)
+                pygame.mixer.music.load('254316__jagadamba__clock-tick.wav')
+                pygame.mixer.music.play()
             elif event.key == pygame.K_RIGHT:
                 current_time += 1
                 action('posY', 0, current_time)
                 action('posX', +1, current_time)
+                pygame.mixer.music.load('254316__jagadamba__clock-tick.wav')
+                pygame.mixer.music.play()
             elif event.key == pygame.K_UP:
                 current_time += 1
                 action('posX', 0, current_time)
                 action('posY', -1, current_time)
+                pygame.mixer.music.load('254316__jagadamba__clock-tick.wav')
+                pygame.mixer.music.play()
             elif event.key == pygame.K_DOWN:
                 current_time += 1
                 action('posX', 0, current_time)
                 action('posY', +1, current_time)
+                pygame.mixer.music.load('254316__jagadamba__clock-tick.wav')
+                pygame.mixer.music.play()
             elif event.key == pygame.K_SPACE:
                 current_time += 1
                 action('posX', 0, current_time)
                 action('posY', 0, current_time)
+                pygame.mixer.music.load('254316__jagadamba__clock-tick.wav')
+                pygame.mixer.music.play()
             elif event.key == pygame.K_BACKSPACE:
                 current_time -= 1
                 pygame.mixer.music.load('162493__tasmanianpower__vinyl-rewind.wav')
