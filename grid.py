@@ -9,6 +9,7 @@ WHITE = (255, 255, 255)
 BLUE =  (  0,   0, 255)
 GREEN = (  0, 255,   0)
 RED =   (255,   0,   0)
+LIGHT_RED =   (255,   128,   128)
 
 def grid(size, color):
     for i in range(1, WIDTH//size):
@@ -19,12 +20,12 @@ def grid(size, color):
 screen = pygame.display.set_mode(SIZE)
 clock = pygame.time.Clock()
 
-current_time = 0
+current_time = 1
 history= [{'state':{'posX': 0, 'posY':0}, 'action': {'posX': 0, 'posY': 0}} for i in range(0, (WIDTH//100)*(HEIGHT//100))]
 
 def bounds_check(key, new_value):
     if key in ['posX', 'posY']:
-        if new_value <= 0 or new_value >= 10:
+        if new_value < 0 or new_value >= 10:
             return False
     return True
 
@@ -33,11 +34,10 @@ def action(key, value, current_time):
     history[current_time]['action'][key] = value
     for time, history_item in enumerate(history):
         if time >= current_time:
+            history_item['state'] = copy.copy(history[time-1]['state'])
             for k, v in history_item['action'].items():
                 if bounds_check(k, history_item['state'][k] + v):
                     history_item['state'][k] += v
-            if time+1 < len(history):
-                history[time+1]['state'] = copy.copy(history_item['state'])
 
 
 
@@ -49,25 +49,43 @@ while 1:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                current_time += 1
+                #current_time += 1
+                action('posY', 0, current_time)
                 action('posX', -1, current_time)
             elif event.key == pygame.K_RIGHT:
-                #if pos[0] < 9:
-                current_time += 1
+                #current_time += 1
+                action('posY', 0, current_time)
                 action('posX', +1, current_time)
             elif event.key == pygame.K_UP:
-                #if pos[1] > 0:
-                current_time += 1
+                #current_time += 1
+                action('posX', 0, current_time)
                 action('posY', -1, current_time)
             elif event.key == pygame.K_DOWN:
-                #if pos[1] < 9:
-                current_time += 1
+                #current_time += 1
+                action('posX', 0, current_time)
                 action('posY', +1, current_time)
+            elif event.key == pygame.K_DELETE:
+                action('posX', 0, current_time)
+                action('posY', 0, current_time)
             elif event.key == pygame.K_BACKSPACE:
                 current_time -= 1
+            elif event.key == pygame.K_SPACE:
+                current_time += 1
+        elif event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+            new_time = (pos[0]//100) + (WIDTH//100) * (pos[1]//100)
+            if new_time > 0:
+                current_time = new_time
     screen.fill(BLACK)
     for time, history_item in enumerate(history):
         state = history_item['state']
+        if time > 0:
+            pygame.draw.rect(screen, LIGHT_RED, [
+                    time%(WIDTH//100)*100+(history[time-1]['state']['posX']*10),
+                    time//(WIDTH//100)*100+(history[time-1]['state']['posY']*10),
+                    10,
+                    10
+                ])
         pygame.draw.rect(screen, RED, [
                 time%(WIDTH//100)*100+(state['posX']*10),
                 time//(WIDTH//100)*100+(state['posY']*10),
