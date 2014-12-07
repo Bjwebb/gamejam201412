@@ -33,6 +33,8 @@ SPRITE_SIZE = 16
 WORLD_SIZE = 10
 player_img = pygame.image.load('instant_dungeon_artpack/By Scott Matott/Players.png')
 stone_img = pygame.image.load('instant_dungeon_artpack/By Scott Matott/stone_bricks.png')
+gems_img = pygame.image.load('instant_dungeon_artpack/By Scott Matott/torch_key_gems.png')
+font = pygame.font.Font(None, 36)
 
 WALLS = [
     ' #        ',
@@ -109,14 +111,12 @@ while 1:
                 current_time += 1
                 action('posX', 0, current_time)
                 action('posY', +1, current_time)
-            elif event.key == pygame.K_DELETE:
+            elif event.key == pygame.K_SPACE:
                 current_time += 1
                 action('posX', 0, current_time)
                 action('posY', 0, current_time)
             elif event.key == pygame.K_BACKSPACE:
                 current_time -= 1
-            elif event.key == pygame.K_SPACE:
-                current_time += 1
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             new_time = (pos[0]//(WORLD_SIZE*SPRITE_SIZE)) + (WIDTH//(WORLD_SIZE*SPRITE_SIZE)) * (pos[1]//(WORLD_SIZE*SPRITE_SIZE))
@@ -139,6 +139,16 @@ while 1:
                             pos_to_pixel_x(x, time),
                             pos_to_pixel_y(y, time),
                         ), (0, 0, 16, 16))
+        if state['posX'] == WORLD_SIZE-1 and state['posY'] == WORLD_SIZE-1:
+            text = font.render('You Win!', 1, WHITE)
+            screen.blit(text, (
+                pos_to_pixel_x(WORLD_SIZE//2, time) - text.get_rect().centerx,
+                pos_to_pixel_y(WORLD_SIZE//2, time) - text.get_rect().centery))
+        elif time == len(history) -1:
+            text = font.render('You Lose!', 1, WHITE)
+            screen.blit(text, (
+                pos_to_pixel_x(WORLD_SIZE//2, time) - text.get_rect().centerx,
+                pos_to_pixel_y(WORLD_SIZE//2, time) - text.get_rect().centery))
     #grid(SPRITE_SIZE, BLUE)
     grid(SPRITE_SIZE*WORLD_SIZE, WHITE)
     pygame.draw.rect(screen, GREEN, [
