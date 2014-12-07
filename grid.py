@@ -36,14 +36,14 @@ stone_img = pygame.image.load('instant_dungeon_artpack/By Scott Matott/stone_bri
 
 WALLS = [
     ' #        ',
-    ' # ## ### ',
-    '   #  # # ',
-    '###  #  # ',
-    '    #   # ',
-    ' ###  # # ',
-    ' #   #  # ',
-    ' # #  # # ',
-    ' # #### ##',
+    '   ## ####',
+    '###       ',
+    '    #### #',
+    ' ###   # #',
+    ' # # # ###',
+    ' # # #    ',
+    ' #   # ## ',
+    ' # ###  ##',
     '      #   ',
 ]
 
@@ -69,6 +69,8 @@ def bounds_check(state):
 
 
 def action(key, value, current_time):
+    if current_time >= len(history):
+        return
     history[current_time]['action'][key] = value
     for time, history_item in enumerate(history):
         if time >= current_time:
@@ -126,9 +128,13 @@ while 1:
                 pos_to_pixel_x(state['posX'], time),
                 pos_to_pixel_y(state['posY'], time),
             ), (0, 0, 16, 16))
-        for y, row in enumerate(WALLS):
-            for x, c in enumerate(row):
-                if c == '#':
+        for x in range(state['posX']-2, state['posX']+3):
+            if x < 0 or x >= WORLD_SIZE:
+                continue
+            for y in range(state['posY']-2, state['posY']+3):
+                if y < 0 or y >= WORLD_SIZE:
+                    continue
+                if WALLS[y][x] == '#':
                     screen.blit(stone_img, (
                             pos_to_pixel_x(x, time),
                             pos_to_pixel_y(y, time),
