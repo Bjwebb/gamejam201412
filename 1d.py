@@ -1,3 +1,5 @@
+# This file by Ben Webb, release as CC0
+# http://creativecommons.org/publicdomain/zero/1.0/legalcode.txt
 import sys, pygame
 pygame.init()
 
