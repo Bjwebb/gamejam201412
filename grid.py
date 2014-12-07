@@ -3,13 +3,15 @@ import pygame
 import copy
 pygame.init()
 
-SIZE = WIDTH, HEIGHT = 800, 600
+SIZE = WIDTH, HEIGHT = 1440, 800
 BLACK = (  0,   0,   0)
 WHITE = (255, 255, 255)
 BLUE =  (  0,   0, 255)
 GREEN = (  0, 255,   0)
 RED =   (255,   0,   0)
 LIGHT_RED =   (255,   128,   128)
+SPRITE_SIZE = 16
+WORLD_SIZE = 10
 
 def grid(size, color):
     for i in range(1, WIDTH//size):
@@ -21,11 +23,11 @@ screen = pygame.display.set_mode(SIZE)
 clock = pygame.time.Clock()
 
 current_time = 1
-history= [{'state':{'posX': 0, 'posY':0}, 'action': {'posX': 0, 'posY': 0}} for i in range(0, (WIDTH//100)*(HEIGHT//100))]
+history= [{'state':{'posX': 0, 'posY':0}, 'action': {'posX': 0, 'posY': 0}} for i in range(0, (WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(HEIGHT//(WORLD_SIZE*SPRITE_SIZE)))]
 
 def bounds_check(key, new_value):
     if key in ['posX', 'posY']:
-        if new_value < 0 or new_value >= 10:
+        if new_value < 0 or new_value >= WORLD_SIZE:
             return False
     return True
 
@@ -73,7 +75,7 @@ while 1:
                 current_time += 1
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            new_time = (pos[0]//100) + (WIDTH//100) * (pos[1]//100)
+            new_time = (pos[0]//(WORLD_SIZE*SPRITE_SIZE)) + (WIDTH//(WORLD_SIZE*SPRITE_SIZE)) * (pos[1]//(WORLD_SIZE*SPRITE_SIZE))
             if new_time > 0:
                 current_time = new_time
     screen.fill(BLACK)
@@ -81,23 +83,23 @@ while 1:
         state = history_item['state']
         if time > 0:
             pygame.draw.rect(screen, LIGHT_RED, [
-                    time%(WIDTH//100)*100+(history[time-1]['state']['posX']*10),
-                    time//(WIDTH//100)*100+(history[time-1]['state']['posY']*10),
-                    10,
-                    10
+                    time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posX']*SPRITE_SIZE),
+                    time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posY']*SPRITE_SIZE),
+                    SPRITE_SIZE,
+                    SPRITE_SIZE
                 ])
         pygame.draw.rect(screen, RED, [
-                time%(WIDTH//100)*100+(state['posX']*10),
-                time//(WIDTH//100)*100+(state['posY']*10),
-                10,
-                10
+                time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posX']*SPRITE_SIZE),
+                time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posY']*SPRITE_SIZE),
+                SPRITE_SIZE,
+                SPRITE_SIZE
             ])
-    grid(10, BLUE)
-    grid(100, WHITE)
+    grid(SPRITE_SIZE, BLUE)
+    grid(SPRITE_SIZE*WORLD_SIZE, WHITE)
     pygame.draw.rect(screen, GREEN, [
-            current_time%(WIDTH//100)*100,
-            current_time//(WIDTH//100)*100,
-            101,
-            101
+            current_time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE),
+            current_time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE),
+            WORLD_SIZE*SPRITE_SIZE+1,
+            WORLD_SIZE*SPRITE_SIZE+1
         ], 1)
     pygame.display.flip()
