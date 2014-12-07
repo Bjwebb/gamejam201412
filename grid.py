@@ -13,6 +13,20 @@ LIGHT_RED =   (255,   128,   128)
 SPRITE_SIZE = 16
 WORLD_SIZE = 10
 player_img = pygame.image.load('instant_dungeon_artpack/By Scott Matott/Players.png')
+stone_img = pygame.image.load('instant_dungeon_artpack/By Scott Matott/stone_bricks.png')
+
+WALLS = [
+    ' #        ',
+    ' # ## ### ',
+    '   #  # # ',
+    '###  #  # ',
+    '    #   # ',
+    ' ###  # # ',
+    ' #   #  # ',
+    ' # #  # # ',
+    ' # #### ##',
+    '      #   ',
+]
 
 def grid(size, color):
     for i in range(1, WIDTH//size):
@@ -23,13 +37,15 @@ def grid(size, color):
 screen = pygame.display.set_mode(SIZE)
 clock = pygame.time.Clock()
 
-current_time = 1
+current_time = 0
 history= [{'state':{'posX': 0, 'posY':0}, 'action': {'posX': 0, 'posY': 0}} for i in range(0, (WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(HEIGHT//(WORLD_SIZE*SPRITE_SIZE)))]
 
-def bounds_check(key, new_value):
-    if key in ['posX', 'posY']:
-        if new_value < 0 or new_value >= WORLD_SIZE:
+def bounds_check(state):
+    for key in ['posX', 'posY']:
+        if state[key] < 0 or state[key] >= WORLD_SIZE:
             return False
+    if WALLS[state['posY']][state['posX']] == '#':
+        return False
     return True
 
 
@@ -39,10 +55,16 @@ def action(key, value, current_time):
         if time >= current_time:
             history_item['state'] = copy.copy(history[time-1]['state'])
             for k, v in history_item['action'].items():
-                if bounds_check(k, history_item['state'][k] + v):
-                    history_item['state'][k] += v
+                new_state = copy.copy(history_item['state'])
+                new_state[k] += v
+                if bounds_check(new_state):
+                    history_item['state'] = new_state
 
+def pos_to_pixel_x(pos, time):
+    return time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(pos*SPRITE_SIZE)
 
+def pos_to_pixel_y(pos, time):
+    return time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(pos*SPRITE_SIZE)
 
 while 1:
     clock.tick(30)
@@ -95,14 +117,21 @@ while 1:
 #                SPRITE_SIZE
 #            ])
         screen.blit(player_img, (
-                time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posX']*SPRITE_SIZE),
-                time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posY']*SPRITE_SIZE),
+                pos_to_pixel_x(state['posX'], time),
+                pos_to_pixel_y(state['posY'], time),
             ), (0, 0, 16, 16))
+        for y, row in enumerate(WALLS):
+            for x, c in enumerate(row):
+                if c == '#':
+                    screen.blit(stone_img, (
+                            pos_to_pixel_x(x, time),
+                            pos_to_pixel_y(y, time),
+                        ), (0, 0, 16, 16))
     #grid(SPRITE_SIZE, BLUE)
     grid(SPRITE_SIZE*WORLD_SIZE, WHITE)
     pygame.draw.rect(screen, GREEN, [
-            current_time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE),
-            current_time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE),
+            pos_to_pixel_x(0, current_time),
+            pos_to_pixel_y(0, current_time),
             WORLD_SIZE*SPRITE_SIZE+1,
             WORLD_SIZE*SPRITE_SIZE+1
         ], 1)
