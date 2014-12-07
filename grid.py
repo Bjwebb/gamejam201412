@@ -117,9 +117,14 @@ while 1:
                 action('posY', 0, current_time)
             elif event.key == pygame.K_BACKSPACE:
                 current_time -= 1
+                pygame.mixer.music.load('162493__tasmanianpower__vinyl-rewind.wav')
+                pygame.mixer.music.play()
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             new_time = (pos[0]//(WORLD_SIZE*SPRITE_SIZE)) + (WIDTH//(WORLD_SIZE*SPRITE_SIZE)) * (pos[1]//(WORLD_SIZE*SPRITE_SIZE))
+            if new_time < current_time:
+                pygame.mixer.music.load('162493__tasmanianpower__vinyl-rewind.wav')
+                pygame.mixer.music.play()
             current_time = new_time
     screen.fill(BLACK)
     for time, history_item in enumerate(history):
