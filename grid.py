@@ -149,6 +149,10 @@ while 1:
             screen.blit(text, (
                 pos_to_pixel_x(WORLD_SIZE//2, time) - text.get_rect().centerx,
                 pos_to_pixel_y(WORLD_SIZE//2, time) - text.get_rect().centery))
+        screen.blit(gems_img, (
+                pos_to_pixel_x(WORLD_SIZE-1, time),
+                pos_to_pixel_y(WORLD_SIZE-1, time),
+            ), (6*16, 16, 16, 16))
     #grid(SPRITE_SIZE, BLUE)
     grid(SPRITE_SIZE*WORLD_SIZE, WHITE)
     pygame.draw.rect(screen, GREEN, [
