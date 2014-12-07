@@ -103,19 +103,6 @@ while 1:
     screen.fill(BLACK)
     for time, history_item in enumerate(history):
         state = history_item['state']
-#        if time > 0:
-#            pygame.draw.rect(screen, LIGHT_RED, [
-#                    time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posX']*SPRITE_SIZE),
-#                    time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posY']*SPRITE_SIZE),
-#                    SPRITE_SIZE,
-#                    SPRITE_SIZE
-#                ])
-#        pygame.draw.rect(screen, RED, [
-#                time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posX']*SPRITE_SIZE),
-#                time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posY']*SPRITE_SIZE),
-#                SPRITE_SIZE,
-#                SPRITE_SIZE
-#            ])
         screen.blit(player_img, (
                 pos_to_pixel_x(state['posX'], time),
                 pos_to_pixel_y(state['posY'], time),
