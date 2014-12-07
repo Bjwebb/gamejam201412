@@ -12,6 +12,7 @@ RED =   (255,   0,   0)
 LIGHT_RED =   (255,   128,   128)
 SPRITE_SIZE = 16
 WORLD_SIZE = 10
+player_img = pygame.image.load('instant_dungeon_artpack/By Scott Matott/Players.png')
 
 def grid(size, color):
     for i in range(1, WIDTH//size):
@@ -44,29 +45,29 @@ def action(key, value, current_time):
 
 
 while 1:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
-
     clock.tick(30)
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                #current_time += 1
+                current_time += 1
                 action('posY', 0, current_time)
                 action('posX', -1, current_time)
             elif event.key == pygame.K_RIGHT:
-                #current_time += 1
+                current_time += 1
                 action('posY', 0, current_time)
                 action('posX', +1, current_time)
             elif event.key == pygame.K_UP:
-                #current_time += 1
+                current_time += 1
                 action('posX', 0, current_time)
                 action('posY', -1, current_time)
             elif event.key == pygame.K_DOWN:
-                #current_time += 1
+                current_time += 1
                 action('posX', 0, current_time)
                 action('posY', +1, current_time)
             elif event.key == pygame.K_DELETE:
+                current_time += 1
                 action('posX', 0, current_time)
                 action('posY', 0, current_time)
             elif event.key == pygame.K_BACKSPACE:
@@ -76,25 +77,28 @@ while 1:
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             new_time = (pos[0]//(WORLD_SIZE*SPRITE_SIZE)) + (WIDTH//(WORLD_SIZE*SPRITE_SIZE)) * (pos[1]//(WORLD_SIZE*SPRITE_SIZE))
-            if new_time > 0:
-                current_time = new_time
+            current_time = new_time
     screen.fill(BLACK)
     for time, history_item in enumerate(history):
         state = history_item['state']
-        if time > 0:
-            pygame.draw.rect(screen, LIGHT_RED, [
-                    time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posX']*SPRITE_SIZE),
-                    time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posY']*SPRITE_SIZE),
-                    SPRITE_SIZE,
-                    SPRITE_SIZE
-                ])
-        pygame.draw.rect(screen, RED, [
+#        if time > 0:
+#            pygame.draw.rect(screen, LIGHT_RED, [
+#                    time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posX']*SPRITE_SIZE),
+#                    time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(history[time-1]['state']['posY']*SPRITE_SIZE),
+#                    SPRITE_SIZE,
+#                    SPRITE_SIZE
+#                ])
+#        pygame.draw.rect(screen, RED, [
+#                time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posX']*SPRITE_SIZE),
+#                time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posY']*SPRITE_SIZE),
+#                SPRITE_SIZE,
+#                SPRITE_SIZE
+#            ])
+        screen.blit(player_img, (
                 time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posX']*SPRITE_SIZE),
                 time//(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE)+(state['posY']*SPRITE_SIZE),
-                SPRITE_SIZE,
-                SPRITE_SIZE
-            ])
-    grid(SPRITE_SIZE, BLUE)
+            ), (0, 0, 16, 16))
+    #grid(SPRITE_SIZE, BLUE)
     grid(SPRITE_SIZE*WORLD_SIZE, WHITE)
     pygame.draw.rect(screen, GREEN, [
             current_time%(WIDTH//(WORLD_SIZE*SPRITE_SIZE))*(WORLD_SIZE*SPRITE_SIZE),
@@ -103,3 +107,4 @@ while 1:
             WORLD_SIZE*SPRITE_SIZE+1
         ], 1)
     pygame.display.flip()
+
